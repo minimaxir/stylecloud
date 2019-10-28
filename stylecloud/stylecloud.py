@@ -54,8 +54,9 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
     Generates a gradient color mask from a specified palette.
     """
     icon = Image.open(os.path.join(icon_dir, 'icon.png'))
-    mask = Image.new("RGB", icon.size, (255, 255, 255))
+    mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
     mask.paste(icon, icon)
+    mask_array = np.array(mask, dtype='float32')
 
     palette_split = palette.split(".")
     palette_name = palette_split[-1]
@@ -63,22 +64,21 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
     # https://stackoverflow.com/a/6677505
     palette_func = getattr(__import__('palettable.{}'.format(
         ".".join(palette_split[:-1])), fromlist=[palette_name]), palette_name)
-    palette = makeMappingArray(size, palette_func.mpl_colormap)
+    gradient = np.array(makeMappingArray(size, palette_func.mpl_colormap))
 
-    for y in range(size):
-        for x in range(size):
-            # Only change nonwhite pixels of icon
-            if mask.getpixel((x, y)) != (255, 255, 255):
+    # matplotlib color maps are from range of (0, 1). Convert to RGB.
+    gradient *= 255.
 
-                color = palette[y] if gradient_dir is "vertical" else palette[x]
+    # Add new axis and repeat gradient across it.
+    gradient = np.tile(gradient, (size, 1, 1))
 
-                # matplotlib color maps are from range of (0,1). Convert to RGB.
-                r = int(color[0] * 255)
-                g = int(color[1] * 255)
-                b = int(color[2] * 255)
+    # if vertical, transpose the gradient.
+    if gradient_dir == 'vertical':
+        gradient = np.transpose(gradient, (1, 0, 2))
 
-                mask.putpixel((x, y), (r, g, b))
+    # Turn any nonwhite pixels on the icon into the gradient colors.
+    mask_array[mask_array != (255., 255., 255., 255.)
+               ] = gradient[mask_array != (255., 255., 255., 255.)]
 
-    # create coloring from gradient mask
     image_colors = ImageColorGenerator(np.array(mask))
     return image_colors
