@@ -1,2 +1,4 @@
 wordcloud
 icon-font-to-png
+matplotlib
+palettable

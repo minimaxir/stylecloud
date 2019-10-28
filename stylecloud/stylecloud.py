@@ -1,7 +1,11 @@
 from icon_font_to_png.icon_font import IconFont
-from wordcloud import WordCloud, STOPWORDS
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import csv
 import os
+import importlib
+from PIL import Image
+from matplotlib.colors import makeMappingArray
+import numpy as np
 
 
 def file_to_text(file_path):
@@ -22,7 +26,7 @@ def file_to_text(file_path):
         return texts
 
 
-def gen_fa_mask(icon_name='fas fa-grin'):
+def gen_fa_mask(icon_name='fas fa-grin', size=512):
     """
     Generates a Font Awesome icon mask from the given FA prefix + name.
     """
@@ -36,7 +40,42 @@ def gen_fa_mask(icon_name='fas fa-grin'):
     icon_name_raw = icon_name.split(' ')[1]
 
     icon = IconFont(css_file=os.path.join('static, fontawesome.min.css'),
-                    ttf_file=os.path.join('static', font_files[icon_prefix]])
+                    ttf_file=os.path.join('static', font_files[icon_prefix]))
 
     icon.export_icon(icon=icon_name_raw[len(icon.common_prefix):],
-                     size=300)
+                     size=size,
+                     filename="icon.png",
+                     export_dir=".temp")
+
+
+def gen_gradient_mask(size, palette, gradient_dir='horizontal'):
+    """
+    Generates a gradient color mask from a specified palette.
+    """
+    icon = Image.open(os.path.join('.temp', 'icon.png'))
+    mask = Image.new("RGB", icon.size, (255, 255, 255))
+    mask.paste(icon, icon)
+
+    # Create a linear gradient using the matplotlib color map
+    palette_split = palette.split(".")
+    palette_func = __import__('palletable.{}'.format(
+        palette_split[:-1]), fromlist=[palette_split[-1]])
+    palette = makeMappingArray(size, palette_func.mpl_colormap)
+
+    for y in range(icon):
+        for x in range(icon):
+            # Only change nonwhite pixels of icon
+            if mask.getpixel((x, y)) != (255, 255, 255):
+
+                color = palette[y] if gradient_dir is "vertical" else palette[x]
+
+                # matplotlib color maps are from range of (0,1). Convert to RGB.
+                r = int(color[0] * 255)
+                g = int(color[1] * 255)
+                b = int(color[2] * 255)
+
+                mask.putpixel((x, y), (r, g, b))
+
+    # create coloring from gradient mask
+    image_colors = ImageColorGenerator(np.array(mask))
+    return image_colors
