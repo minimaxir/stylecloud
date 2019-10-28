@@ -77,8 +77,8 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
         gradient = np.transpose(gradient, (1, 0, 2))
 
     # Turn any nonwhite pixels on the icon into the gradient colors.
-    mask_array[mask_array != (255., 255., 255., 255.)
-               ] = gradient[mask_array != (255., 255., 255., 255.)]
+    white = (255., 255., 255., 255.)
+    mask_array[mask_array != white] = gradient[mask_array != white]
 
     image_colors = ImageColorGenerator(mask_array)
     return image_colors
