@@ -80,5 +80,5 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
     mask_array[mask_array != (255., 255., 255., 255.)
                ] = gradient[mask_array != (255., 255., 255., 255.)]
 
-    image_colors = ImageColorGenerator(np.array(mask))
+    image_colors = ImageColorGenerator(mask_array)
     return image_colors
