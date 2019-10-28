@@ -48,22 +48,25 @@ def gen_fa_mask(icon_name='fas fa-grin', size=512):
                      export_dir=".temp")
 
 
-def gen_gradient_mask(size, palette, gradient_dir='horizontal'):
+def gen_gradient_mask(size, palette, icon_dir='.temp',
+                      gradient_dir='horizontal'):
     """
     Generates a gradient color mask from a specified palette.
     """
-    icon = Image.open(os.path.join('.temp', 'icon.png'))
+    icon = Image.open(os.path.join(icon_dir, 'icon.png'))
     mask = Image.new("RGB", icon.size, (255, 255, 255))
     mask.paste(icon, icon)
 
-    # Create a linear gradient using the matplotlib color map
     palette_split = palette.split(".")
-    palette_func = __import__('palletable.{}'.format(
-        palette_split[:-1]), fromlist=[palette_split[-1]])
+    palette_name = palette_split[-1]
+
+    # https://stackoverflow.com/a/6677505
+    palette_func = getattr(__import__('palettable.{}'.format(
+        ".".join(palette_split[:-1])), fromlist=[palette_name]), palette_name)
     palette = makeMappingArray(size, palette_func.mpl_colormap)
 
-    for y in range(icon):
-        for x in range(icon):
+    for y in range(size):
+        for x in range(size):
             # Only change nonwhite pixels of icon
             if mask.getpixel((x, y)) != (255, 255, 255):
 
