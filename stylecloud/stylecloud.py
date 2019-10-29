@@ -26,7 +26,7 @@ def file_to_text(file_path):
         return texts
 
 
-def gen_fa_mask(icon_name='fas fa-grin', size=1024, icon_dir='.temp'):
+def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp'):
     """
     Generates a Font Awesome icon mask from the given FA prefix + name.
     """
@@ -48,6 +48,17 @@ def gen_fa_mask(icon_name='fas fa-grin', size=1024, icon_dir='.temp'):
                      export_dir=icon_dir)
 
 
+def gen_palette(palette):
+    """Generates the corresponding palette function from `palettable`"""
+    palette_split = palette.split(".")
+    palette_name = palette_split[-1]
+
+    # https://stackoverflow.com/a/6677505
+    palette_func = getattr(__import__('palettable.{}'.format(
+        ".".join(palette_split[:-1])), fromlist=[palette_name]), palette_name)
+    return palette_func
+
+
 def gen_gradient_mask(size, palette, icon_dir='.temp',
                       gradient_dir='horizontal'):
     """
@@ -58,12 +69,7 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
     mask.paste(icon, icon)
     mask_array = np.array(mask, dtype='float32')
 
-    palette_split = palette.split(".")
-    palette_name = palette_split[-1]
-
-    # https://stackoverflow.com/a/6677505
-    palette_func = getattr(__import__('palettable.{}'.format(
-        ".".join(palette_split[:-1])), fromlist=[palette_name]), palette_name)
+    palette_func = gen_palette(palette)
     gradient = np.array(makeMappingArray(size, palette_func.mpl_colormap))
 
     # matplotlib color maps are from range of (0, 1). Convert to RGB.
@@ -85,7 +91,7 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
 
 
 def gen_stylecloud(text=None,
-                   size=1024,
+                   size=512,
                    icon_name='fas fa-grin',
                    palette='matplotlib.Viridis_20',
                    background_color="white",
