@@ -87,7 +87,7 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
     mask_array[mask_array != white] = gradient[mask_array != white]
 
     image_colors = ImageColorGenerator(mask_array)
-    return image_colors, mask_array
+    return image_colors, np.uint8(mask_array)
 
 
 def gen_stylecloud(text=None,
@@ -99,7 +99,7 @@ def gen_stylecloud(text=None,
                    max_words=2000,
                    icon_dir='.temp',
                    output_name='stylecloud.png',
-                   gradient_dir=None,
+                   gradient=None,
                    file_path=None,
                    font_path=os.path.join('static', 'Staatliches-Regular.ttf'),
                    random_state=None):
@@ -109,15 +109,32 @@ def gen_stylecloud(text=None,
                ), "Either text or file_path must be specified."
 
     gen_fa_mask(icon_name, size, icon_dir)
-    image_colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
-                                                 gradient_dir)
+
+    if gradient:
+        colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
+                                               gradient)
+    else:  # Color each word randomly from the palette
+        icon = Image.open(os.path.join(icon_dir, 'icon.png'))
+        mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
+        mask.paste(icon, icon)
+        mask_array = np.array(mask)
+
+        palette_func = gen_palette(palette)
+
+        # See also:
+        # https://amueller.github.io/word_cloud/auto_examples/a_new_hope.html
+        def colors(word, font_size, position,
+                   orientation, random_state,
+                   **kwargs):
+            rand_color = np.random.randint(0, palette_func.number - 1)
+            return tuple(palette_func.colors[rand_color])
 
     wc = WordCloud(background_color=background_color,
                    font_path=font_path,
-                   max_words=max_words, mask=np.uint8(mask_array),
+                   max_words=max_words, mask=mask_array,
                    max_font_size=max_font_size, random_state=random_state)
 
     # generate word cloud
     wc.generate_from_text(text)
-    wc.recolor(color_func=image_colors, random_state=random_state)
+    wc.recolor(color_func=colors, random_state=random_state)
     wc.to_file(output_name)
