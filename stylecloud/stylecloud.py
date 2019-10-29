@@ -59,15 +59,22 @@ def gen_palette(palette):
     return palette_func
 
 
+def gen_mask_array(icon_dir, dtype):
+    """Generates a numpy array of an icon mask."""
+    icon = Image.open(os.path.join(icon_dir, 'icon.png'))
+    mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
+    mask.paste(icon, icon)
+    mask_array = np.array(mask, dtype=dtype)
+
+    return mask_array
+
+
 def gen_gradient_mask(size, palette, icon_dir='.temp',
                       gradient_dir='horizontal'):
     """
     Generates a gradient color mask from a specified palette.
     """
-    icon = Image.open(os.path.join(icon_dir, 'icon.png'))
-    mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
-    mask.paste(icon, icon)
-    mask_array = np.array(mask, dtype='float32')
+    mask_array = gen_mask_array(icon_dir, 'float32')
 
     palette_func = gen_palette(palette)
     gradient = np.array(makeMappingArray(size, palette_func.mpl_colormap))
@@ -114,11 +121,7 @@ def gen_stylecloud(text=None,
         colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
                                                gradient)
     else:  # Color each word randomly from the palette
-        icon = Image.open(os.path.join(icon_dir, 'icon.png'))
-        mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
-        mask.paste(icon, icon)
-        mask_array = np.array(mask)
-
+        mask_array = gen_mask_array(icon_dir, 'uint8')
         palette_func = gen_palette(palette)
 
         # See also:
