@@ -95,6 +95,7 @@ def gen_stylecloud(text=None,
                    output_name='stylecloud.png',
                    gradient_dir=None,
                    file_path=None,
+                   font_path=os.path.join('static', 'Staatliches-Regular.ttf'),
                    random_state=None):
     """Generates a stylecloud!"""
 
@@ -106,7 +107,8 @@ def gen_stylecloud(text=None,
                                                  gradient_dir)
 
     wc = WordCloud(background_color=background_color,
-                   max_words=max_words, mask=mask_array,
+                   font_path=font_path,
+                   max_words=max_words, mask=np.uint8(mask_array),
                    max_font_size=max_font_size, random_state=random_state)
 
     # generate word cloud
