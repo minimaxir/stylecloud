@@ -7,6 +7,7 @@ from PIL import Image
 from matplotlib.colors import makeMappingArray
 import numpy as np
 import fire
+from shutil import rmtree
 
 
 def file_to_text(file_path):
@@ -159,6 +160,9 @@ def gen_stylecloud(text=None,
     wc.generate_from_text(text)
     wc.recolor(color_func=colors, random_state=random_state)
     wc.to_file(output_name)
+
+    # cleanup icon folder
+    rmtree(icon_dir)
 
 
 if __name__ == '__main__':
