@@ -2,17 +2,59 @@
 
 Generate stylistic wordclouds, including gradients and icon shapes!
 
-stylecloud is a Python package extends the popular wordcloud package, adding useful features to create truly unique word clouds!
+stylecloud is a Python package leverages the popular [word_cloud](https://github.com/amueller/word_cloud) package, adding useful features to create truly unique word clouds!
 
-* Icon shapes (via Font Awesome 5.11.2)
-* Support for custom icon font files (e.g. Font Awesome Pro)
-* Directional gradients
-* Command Line Interface
+* Icon shapes for wordclouds (via [Font Awesome](https://fontawesome.com) 5.11.2)
+* Support for advanced color palettes (via [palettable](https://jiffyclub.github.io/palettable/))
+* Directional gradients w/ the aforementioned palettes.
+* Supports reading a file of text, or reading a pre-generated CSV with words and counts.
+* Command Line Interface!
+
+This package is a more formal implementation of my [stylistic word cloud project](https://minimaxir.com/2016/05/wordclouds/) from 2016.
+
+## Usage
+
+You can use stylecloud in a Python script or as a standalone CLI app.
+
+Python script:
+
+```python
+import stylecloud
+
+stylecloud.stylecloud(text="I am a teapot.",
+                      icon='fas fa-kiss')
+```
+
+### Helpful Parameters
+
+These parameters are valid for both the Python function and the CLI.
+
+* text: Input text. Best used if calling the function directly.
+* file_path: File path of the input text/CSV. Best used on the CLI.
+* gradient: Direction of gradient. (if not None, the stylecloud will use a directional gradient) [default: `None`]
+* size: Size (length and width in pixels) of the stylecloud. [default: `512`]
+* icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin') [defau]
+* palette: Color palette (via palettable) [default: `matplotlib.Viridis_20`]
+* background_color: Background color (name or hex) [default: `white`]
+* max_font_size: Maximum font size in the stylecloud. [default: `200`]
+* max_words: Maximum number of words to include in the stylecloud. [default: `2000`]
+* stopwords: Boolean to filter out common stopwords. [default: `True`]
+* output_name: Output file name of the stylecloud. [default: `stylecloud.png`]
+* font_path: Path to .ttf file for font to use in stylecloud. [default: uses included Staatliches font]
+* random_state: Controls random state of words and colors.
 
 ## Helpful Notes
 
 * The primary goal of this package is to create data visualizations of text that provide a unique aesthetic. Word clouds have tradeoffs in terms of a persuasive data visualization, but this is explicitly trying to create a viz that looks cool!
 * This package is released as a separate package from `wordcloud` due to the increase in scope and Python dependencies.
+* The ideal fonts for generating a good stylecloud are a) bold/high weight in order to increase readability, and b) condensed/low kerning to fit more text. Both of these traits are why [Staatliches](https://fonts.google.com/specimen/Staatliches) is the default font for stylecloud (overriding Droid Sans in the base `word_cloud`).
+* You may want to consider doing post-processing after generating a stylecloud: for example, adding color masks, adding perception skew, feed it to a style transfer AI model, etc.
+* Due to the size of the included Font Awesome font files, they will not be updated on every new FA release.
+  
+# To Do
+
+* Support custom font files (e.g. Font Awesome Pro)
+* Create an app running stylecloud
 
 ## Maintainer/Creator
 
