@@ -106,6 +106,7 @@ def gen_stylecloud(text=None,
                    background_color="white",
                    max_font_size=200,
                    max_words=2000,
+                   stopwords=True,
                    icon_dir='.temp',
                    output_name='stylecloud.png',
                    gradient=None,
@@ -120,9 +121,10 @@ def gen_stylecloud(text=None,
     :param background_color: Background color (name or hex)
     :param max_font_size: Maximum font size in the stylecloud.
     :param max_words: Maximum number of words to include in the stylecloud.
+    :param stopwords: Boolean to filter out common stopwords.
     :param icon_dir: Temp directory to store the icon mask image.
-    :param output_name: Output file name of the stylecloud
-    :param gradient: Direction of gradient (if not None, will use gradient)
+    :param output_name: Output file name of the stylecloud.
+    :param gradient: Direction of gradient. (if not None, will use gradient)
     :param font_path: Path to .ttf file for font to use in stylecloud.
     :param random_state: Controls random state of words and colors.
     """
@@ -150,6 +152,7 @@ def gen_stylecloud(text=None,
     wc = WordCloud(background_color=background_color,
                    font_path=font_path,
                    max_words=max_words, mask=mask_array,
+                   stopwords=STOPWORDS if stopwords else None,
                    max_font_size=max_font_size, random_state=random_state)
 
     # generate word cloud
