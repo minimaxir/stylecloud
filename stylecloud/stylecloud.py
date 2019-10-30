@@ -6,6 +6,7 @@ import importlib
 from PIL import Image
 from matplotlib.colors import makeMappingArray
 import numpy as np
+import fire
 
 
 def file_to_text(file_path):
@@ -98,6 +99,7 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
 
 
 def gen_stylecloud(text=None,
+                   file_path=None,
                    size=512,
                    icon_name='fas fa-grin',
                    palette='matplotlib.Viridis_20',
@@ -107,10 +109,23 @@ def gen_stylecloud(text=None,
                    icon_dir='.temp',
                    output_name='stylecloud.png',
                    gradient=None,
-                   file_path=None,
                    font_path=os.path.join('static', 'Staatliches-Regular.ttf'),
                    random_state=None):
-    """Generates a stylecloud!"""
+    """Generates a stylecloud!
+    :param text: Input text. Best used if calling the function directly.
+    :param file_path: File path of the input text/CSV. Best used on the CLI.
+    :param size: Size (length and width in pixels) of the stylecloud.
+    :param icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin')
+    :param palette: Color palette (via palettable)
+    :param background_color: Background color (name or hex)
+    :param max_font_size: Maximum font size in the stylecloud.
+    :param max_words: Maximum number of words to include in the stylecloud.
+    :param icon_dir: Temp directory to store the icon mask image.
+    :param output_name: Output file name of the stylecloud
+    :param gradient: Direction of gradient (if not None, will use gradient)
+    :param font_path: Path to .ttf file for font to use in stylecloud.
+    :param random_state: Controls random state of words and colors.
+    """
 
     assert any([text, file_path]
                ), "Either text or file_path must be specified."
@@ -141,3 +156,7 @@ def gen_stylecloud(text=None,
     wc.generate_from_text(text)
     wc.recolor(color_func=colors, random_state=random_state)
     wc.to_file(output_name)
+
+
+if __name__ == '__main__':
+    fire.Fire(gen_stylecloud)
