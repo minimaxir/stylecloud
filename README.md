@@ -65,3 +65,7 @@ Max Woolf ([@minimaxir](https://minimaxir.com))
 ## License
 
 MIT
+
+Font Awesome icon font files included per the terms in its [SIL OFL 1.1 License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
+
+Staatliches font included per the terms in its [SIL OFL 1.1 License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
