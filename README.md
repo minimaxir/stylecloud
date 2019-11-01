@@ -34,7 +34,7 @@ These parameters are valid for both the Python function and the CLI.
 * gradient: Direction of gradient. (if not None, the stylecloud will use a directional gradient) [default: `None`]
 * size: Size (length and width in pixels) of the stylecloud. [default: `512`]
 * icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin') [default: `fas fa-flag`]
-* palette: Color palette (via palettable) [default: `colorbrewer.qualitative.Dark2_8`]
+* palette: Color palette (via palettable) [default: `cartocolors.qualitative.Bold_6`]
 * background_color: Background color (name or hex) [default: `white`]
 * max_font_size: Maximum font size in the stylecloud. [default: `200`]
 * max_words: Maximum number of words to include in the stylecloud. [default: `2000`]
@@ -51,6 +51,7 @@ These parameters are valid for both the Python function and the CLI.
 * You may want to consider doing post-processing after generating a stylecloud: for example, adding color masks, adding perception skew, feed it to a style transfer AI model, etc.
 * Due to the size of the included Font Awesome font files, they will not be updated on every new FA release.
 * It's recommended to use FA icons which are large with heavy weight; thin icons might constrain the text too much.
+* If using the default random-color-sampling method, it's recommended to use a qualitative palette. Inversely, if using a gradient, it's recommended to use a *non*qualitative palette.
   
 # To Do
 
