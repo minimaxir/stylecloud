@@ -33,8 +33,8 @@ These parameters are valid for both the Python function and the CLI.
 * file_path: File path of the input text/CSV. Best used on the CLI.
 * gradient: Direction of gradient. (if not None, the stylecloud will use a directional gradient) [default: `None`]
 * size: Size (length and width in pixels) of the stylecloud. [default: `512`]
-* icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin') [defau]
-* palette: Color palette (via palettable) [default: `matplotlib.Viridis_20`]
+* icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin') [default: `fas fa-flag`]
+* palette: Color palette (via palettable) [default: `colorbrewer.qualitative.Dark2_8`]
 * background_color: Background color (name or hex) [default: `white`]
 * max_font_size: Maximum font size in the stylecloud. [default: `200`]
 * max_words: Maximum number of words to include in the stylecloud. [default: `2000`]
@@ -50,6 +50,7 @@ These parameters are valid for both the Python function and the CLI.
 * The ideal fonts for generating a good stylecloud are a) bold/high weight in order to increase readability, and b) condensed/low kerning to fit more text. Both of these traits are why [Staatliches](https://fonts.google.com/specimen/Staatliches) is the default font for stylecloud (overriding Droid Sans in the base `word_cloud`).
 * You may want to consider doing post-processing after generating a stylecloud: for example, adding color masks, adding perception skew, feed it to a style transfer AI model, etc.
 * Due to the size of the included Font Awesome font files, they will not be updated on every new FA release.
+* It's recommended to use FA icons which are large with heavy weight; thin icons might constrain the text too much.
   
 # To Do
 

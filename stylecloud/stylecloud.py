@@ -102,8 +102,8 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
 def gen_stylecloud(text=None,
                    file_path=None,
                    size=512,
-                   icon_name='fas fa-grin',
-                   palette='matplotlib.Viridis_20',
+                   icon_name='fas fa-flag',
+                   palette='colorbrewer.qualitative.Dark2_8',
                    background_color="white",
                    max_font_size=200,
                    max_words=2000,
@@ -132,6 +132,9 @@ def gen_stylecloud(text=None,
 
     assert any([text, file_path]
                ), "Either text or file_path must be specified."
+
+    if file_path:
+        text = file_to_text(file_path)
 
     gen_fa_mask(icon_name, size, icon_dir)
 
