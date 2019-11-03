@@ -2,3 +2,4 @@ wordcloud
 icon-font-to-png
 palettable
 fire
+matplotlib

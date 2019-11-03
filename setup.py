@@ -18,7 +18,7 @@ This package is a more formal implementation of my [stylistic word cloud project
 setup(
     name='stylecloud',
     packages=['stylecloud'],  # this must be the same as the name above
-    version='0.1',
+    version='0.1.1',
     description="Python package + CLI to generate stylistic wordclouds, " \
     "including gradients and icon shapes!",
     long_description=long_description,
@@ -34,5 +34,5 @@ setup(
     },
     python_requires='>=3.5',
     include_package_data=True,
-    install_requires=['wordcloud', 'icon-font-to-png', 'palettable', 'fire']
+    install_requires=['wordcloud', 'icon-font-to-png', 'palettable', 'fire', 'matplotlib']
 )
