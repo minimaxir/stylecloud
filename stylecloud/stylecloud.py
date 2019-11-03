@@ -23,11 +23,12 @@ def file_to_text(file_path):
             text = f.read()
         return text
     else:  # parse as a CSV
-        texts = []
+        texts = {}
         with open(file_path, 'r') as f:
             r = csv.reader(f)
+            next(r)
             for row in r:
-                texts.append((row[0], row[1]))
+                texts[row[0]] = float(row[1])
         return texts
 
 
@@ -167,7 +168,10 @@ def gen_stylecloud(text=None,
                    max_font_size=max_font_size, random_state=random_state)
 
     # generate word cloud
-    wc.generate_from_text(text)
+    if isinstance(text, str):
+        wc.generate_from_text(text)
+    else:  # i.e. a dict of word:value from a CSV
+        wc.generate_from_frequencies(text)
     wc.recolor(color_func=colors, random_state=random_state)
     wc.to_file(output_name)
 
