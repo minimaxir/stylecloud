@@ -2,7 +2,7 @@
 
 Generate stylistic wordclouds, including gradients and icon shapes!
 
-stylecloud is a Python package leverages the popular [word_cloud](https://github.com/amueller/word_cloud) package, adding useful features to create truly unique word clouds!
+stylecloud is a Python package that leverages the popular [word_cloud](https://github.com/amueller/word_cloud) package, adding useful features to create truly unique word clouds!
 
 * Icon shapes for wordclouds (via [Font Awesome](https://fontawesome.com) 5.11.2)
 * Support for advanced color palettes (via [palettable](https://jiffyclub.github.io/palettable/))
@@ -11,6 +11,14 @@ stylecloud is a Python package leverages the popular [word_cloud](https://github
 * Command Line Interface!
 
 This package is a more formal implementation of my [stylistic word cloud project](https://minimaxir.com/2016/05/wordclouds/) from 2016.
+
+## Installation
+
+You can install stylecloud via pip:
+
+```sh
+pip3 install stylecloud
+```
 
 ## Usage
 
@@ -21,13 +29,36 @@ Python script:
 ```python
 import stylecloud
 
-stylecloud.stylecloud(text="I am a teapot.",
-                      icon='fas fa-kiss')
+stylecloud.gen_stylecloud(file_path='constitution.txt')
+```
+
+But you can do so much more! You can use the free Font Awesome icons to change the shape, change the color palette to one from palettable for a custom style, change the background color, and, most importantly, add a gradient so the colors flow in a specified direction!
+
+```python
+import stylecloud
+
+stylecloud.gen_stylecloud(file_path='constitution.txt',
+                          icon_name='fas fa-dog',
+                          palette='colorbrewer.diverging.Spectral_11',
+                          background_color='black',
+                          gradient='horizontal')
+```
+
+You can also use the CLI for even faster stylecloud generation! For the simple flag stylecloud above:
+
+```sh
+stylecloud --file_path constitution.txt
+```
+
+For the more complex dog-gradient stylecloud:
+
+```sh
+stylecloud --file_path constitution.txt --icon_name 'fas fa-dog' --palette colorbrewer.diverging.Spectral_11 --background_color black --gradient horizontal
 ```
 
 ### Helpful Parameters
 
-These parameters are valid for both the Python function and the CLI.
+These parameters are valid for both the Python function and the CLI (you can use `stylecloud -h` to get this information as well).
 
 * text: Input text. Best used if calling the function directly.
 * file_path: File path of the input text/CSV. Best used on the CLI.
