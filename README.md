@@ -32,7 +32,7 @@ import stylecloud
 stylecloud.gen_stylecloud(file_path='constitution.txt')
 ```
 
-But you can do so much more! You can use the free Font Awesome icons to change the shape, change the color palette to one from palettable for a custom style, change the background color, and, most importantly, add a gradient so the colors flow in a specified direction!
+But you can do so much more! You can use the [free Font Awesome icons](https://fontawesome.com/icons?d=gallery&m=free) to change the shape, change the color palette to one from [palettable](https://jiffyclub.github.io/palettable/) for a custom style, change the background color, and, most importantly, add a gradient so the colors flow in a specified direction!
 
 ```python
 import stylecloud

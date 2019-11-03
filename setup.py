@@ -19,8 +19,8 @@ setup(
     name='stylecloud',
     packages=['stylecloud'],  # this must be the same as the name above
     version='0.1',
-    description="Python package to easily retrain OpenAI's GPT-2 " \
-    "text-generating model on new texts.",
+    description="Python package + CLI to generate stylistic wordclouds, " \
+    "including gradients and icon shapes!",
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Max Woolf',
