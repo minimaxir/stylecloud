@@ -1,2 +1,2 @@
-graft */static
-exclude .DS_Store
+graft static
+global-exclude .DS_Store
