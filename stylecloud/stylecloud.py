@@ -8,6 +8,9 @@ from matplotlib.colors import makeMappingArray
 import numpy as np
 import fire
 from shutil import rmtree
+from pkg_resources import resource_filename
+
+STATIC_PATH = resource_filename(__name__, 'static')
 
 
 def file_to_text(file_path):
@@ -41,8 +44,8 @@ def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp'):
     icon_prefix = icon_name.split(' ')[0]
     icon_name_raw = icon_name.split(' ')[1]
 
-    icon = IconFont(css_file=os.path.join('static', 'fontawesome.min.css'),
-                    ttf_file=os.path.join('static', font_files[icon_prefix]))
+    icon = IconFont(css_file=os.path.join(STATIC_PATH, 'fontawesome.min.css'),
+                    ttf_file=os.path.join(STATIC_PATH, font_files[icon_prefix]))
 
     icon.export_icon(icon=icon_name_raw[len(icon.common_prefix):],
                      size=size,
@@ -111,7 +114,8 @@ def gen_stylecloud(text=None,
                    icon_dir='.temp',
                    output_name='stylecloud.png',
                    gradient=None,
-                   font_path=os.path.join('static', 'Staatliches-Regular.ttf'),
+                   font_path=os.path.join(STATIC_PATH,
+                                          'Staatliches-Regular.ttf'),
                    random_state=None):
     """Generates a stylecloud!
     :param text: Input text. Best used if calling the function directly.
@@ -153,6 +157,9 @@ def gen_stylecloud(text=None,
             rand_color = np.random.randint(0, palette_func.number - 1)
             return tuple(palette_func.colors[rand_color])
 
+    # cleanup icon folder
+    rmtree(icon_dir)
+
     wc = WordCloud(background_color=background_color,
                    font_path=font_path,
                    max_words=max_words, mask=mask_array,
@@ -164,9 +171,7 @@ def gen_stylecloud(text=None,
     wc.recolor(color_func=colors, random_state=random_state)
     wc.to_file(output_name)
 
-    # cleanup icon folder
-    rmtree(icon_dir)
 
-
-if __name__ == '__main__':
+def stylecloud_cli(**kwargs):
+    """Entrypoint for the stylecloud CLI."""
     fire.Fire(gen_stylecloud)
