@@ -2,7 +2,6 @@ from icon_font_to_png.icon_font import IconFont
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import csv
 import os
-import importlib
 from PIL import Image
 from matplotlib.colors import makeMappingArray
 import numpy as np
@@ -15,7 +14,8 @@ STATIC_PATH = resource_filename(__name__, 'static')
 
 def file_to_text(file_path):
     """
-    Reads a text file, or if the file is a .csv, read as a list of word/counts.
+    Reads a text file, or if the file is a .csv,
+    read as a dict of word/counts.
     """
 
     if not file_path.endswith('.csv'):
@@ -55,7 +55,7 @@ def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp'):
 
 
 def gen_palette(palette):
-    """Generates the corresponding palette function from `palettable`"""
+    """Generates the corresponding palette function from `palettable`."""
     palette_split = palette.split(".")
     palette_name = palette_split[-1]
 
@@ -77,9 +77,7 @@ def gen_mask_array(icon_dir, dtype):
 
 def gen_gradient_mask(size, palette, icon_dir='.temp',
                       gradient_dir='horizontal'):
-    """
-    Generates a gradient color mask from a specified palette.
-    """
+    """Generates a gradient color mask from a specified palette."""
     mask_array = gen_mask_array(icon_dir, 'float32')
 
     palette_func = gen_palette(palette)
