@@ -1,1 +1,2 @@
 graft */static
+exclude .DS_Store
