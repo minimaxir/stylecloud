@@ -1,10 +1,12 @@
 # stylecloud
 
+![](https://github.com/minimaxir/stylecloud-examples/raw/master/stylecloud_banner.png)
+
 Generate stylistic wordclouds, including gradients and icon shapes!
 
 stylecloud is a Python package that leverages the popular [word_cloud](https://github.com/amueller/word_cloud) package, adding useful features to create truly unique word clouds!
 
-* Icon shapes for wordclouds (via [Font Awesome](https://fontawesome.com) 5.11.2)
+* Icon shapes (of any size!) for wordclouds (via [Font Awesome](https://fontawesome.com) 5.11.2)
 * Support for advanced color palettes (via [palettable](https://jiffyclub.github.io/palettable/))
 * Directional gradients w/ the aforementioned palettes.
 * Supports reading a file of text, or reading a pre-generated CSV with words and counts.
@@ -14,7 +16,7 @@ This package is a more formal implementation of my [stylistic word cloud project
 
 ## Installation
 
-You can install stylecloud via pip:
+You can install [stylecloud](https://pypi.org/project/stylecloud/) via pip:
 
 ```sh
 pip3 install stylecloud
@@ -22,7 +24,7 @@ pip3 install stylecloud
 
 ## Usage
 
-You can use stylecloud in a Python script or as a standalone CLI app.
+You can use stylecloud in a Python script or as a standalone CLI app. For example, let's say you have a text of the U.S. Constitution `constitution.txt`.
 
 Python script:
 
@@ -31,6 +33,8 @@ import stylecloud
 
 stylecloud.gen_stylecloud(file_path='constitution.txt')
 ```
+
+![](https://github.com/minimaxir/stylecloud-examples/raw/master/hello-world/stylecloud1.png)
 
 But you can do so much more! You can use the [free Font Awesome icons](https://fontawesome.com/icons?d=gallery&m=free) to change the shape, change the color palette to one from [palettable](https://jiffyclub.github.io/palettable/) for a custom style, change the background color, and, most importantly, add a gradient so the colors flow in a specified direction!
 
@@ -44,6 +48,8 @@ stylecloud.gen_stylecloud(file_path='constitution.txt',
                           gradient='horizontal')
 ```
 
+![](https://github.com/minimaxir/stylecloud-examples/raw/master/hello-world/stylecloud3.png)
+
 You can also use the CLI for even faster stylecloud generation! For the simple flag stylecloud above:
 
 ```sh
@@ -55,6 +61,8 @@ For the more complex dog-gradient stylecloud:
 ```sh
 stylecloud --file_path constitution.txt --icon_name 'fas fa-dog' --palette colorbrewer.diverging.Spectral_11 --background_color black --gradient horizontal
 ```
+
+You can find more examples of styleclouds, including how to make styleclouds from Twitter and Reddit data, in the [stylecloud-examples](https://github.com/minimaxir/stylecloud-examples) repo.
 
 ### Helpful Parameters
 
@@ -76,13 +84,14 @@ These parameters are valid for both the Python function and the CLI (you can use
 
 ## Helpful Notes
 
-* The primary goal of this package is to create data visualizations of text that provide a unique aesthetic. Word clouds have tradeoffs in terms of a persuasive data visualization, but this is explicitly trying to create a viz that looks cool!
-* This package is released as a separate package from `wordcloud` due to the increase in scope and Python dependencies.
+* The primary goal of this package is to create data visualizations of text that provide a unique aesthetic. Word clouds have tradeoffs in terms of a statistically robust data visualization, but this is explicitly prioritizing coolness!
+* This package is released as a separate package from `word_cloud` due to the increase in scope and Python dependencies.
 * The ideal fonts for generating a good stylecloud are a) bold/high weight in order to increase readability, and b) condensed/low kerning to fit more text. Both of these traits are why [Staatliches](https://fonts.google.com/specimen/Staatliches) is the default font for stylecloud (overriding Droid Sans in the base `word_cloud`).
 * You may want to consider doing post-processing after generating a stylecloud: for example, adding color masks, adding perception skew, feed it to a style transfer AI model, etc.
-* Due to the size of the included Font Awesome font files, they will not be updated on every new FA release.
+* The default `max_font_size` of `200` is calibrated for the default `size` of `512`. If you increase the `size`, you may want to consider increasing `max_font_size` as well.
+* Due to the size of the included Font Awesome font files, they will not be updated on every new minor FA release.
 * It's recommended to use FA icons which are large with heavy weight; thin icons might constrain the text too much.
-* If using the default random-color-sampling method, it's recommended to use a qualitative palette. Inversely, if using a gradient, it's recommended to use a *non*qualitative palette.
+* If using the default random-color-sampling method, it's recommended to use a qualitative palette. Inversely, if using a gradient, it's recommended to use a *non*qualitative palette (e.g. a sequential palette).
   
 # To Do
 
