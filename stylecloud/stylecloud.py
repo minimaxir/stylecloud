@@ -162,7 +162,7 @@ def gen_stylecloud(text=None,
     wc = WordCloud(background_color=background_color,
                    font_path=font_path,
                    max_words=max_words, mask=mask_array,
-                   stopwords=STOPWORDS if stopwords else None,
+                   stopwords=stopwords if stopwords else STOPWORDS,
                    max_font_size=max_font_size, random_state=random_state)
 
     # generate word cloud
