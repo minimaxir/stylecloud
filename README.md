@@ -64,6 +64,22 @@ stylecloud --file_path constitution.txt --icon_name 'fas fa-dog' --palette color
 
 You can find more examples of styleclouds, including how to make styleclouds from Twitter and Reddit data, in the [stylecloud-examples](https://github.com/minimaxir/stylecloud-examples) repo.
 
+In order to deal with different languages or simply add list of custom stopwords it is possible to pass a list contained in a string as parameter like so :
+
+```sh
+stylecloud --file_path constitution.txt --custom_words "[thereof, may, state, united states]"
+```
+
+For more control it would of course be most ideal to define the list in code since if one is defining stopwords for another language these lists can get long. In that case simply pass in the list as argument to the function
+
+```python
+import stylecloud
+my_long_list = [thereof, may, state, united states]
+
+stylecloud.gen_stylecloud(file_path=constitution.txt, custom_words=my_long_list)
+```
+Good ressources for stopwords in other languages are the [stop-words python package](https://github.com/Alir3z4/python-stop-words) which gives you python lists directly. Or as JSON arrays this list of [iso stopword collections](https://github.com/stopwords-iso/stopwords-iso).
+
 ### Helpful Parameters
 
 These parameters are valid for both the Python function and the CLI (you can use `stylecloud -h` to get this information as well).
@@ -78,6 +94,7 @@ These parameters are valid for both the Python function and the CLI (you can use
 * max_font_size: Maximum font size in the stylecloud. [default: `200`]
 * max_words: Maximum number of words to include in the stylecloud. [default: `2000`]
 * stopwords: Boolean to filter out common stopwords. [default: `True`]
+* custom_stopwords: list of custom stopwords. e.g: For other languages than english [default: `STOPWORDS`]
 * output_name: Output file name of the stylecloud. [default: `stylecloud.png`]
 * font_path: Path to .ttf file for font to use in stylecloud. [default: uses included Staatliches font]
 * random_state: Controls random state of words and colors.
