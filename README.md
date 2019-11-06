@@ -74,7 +74,7 @@ For more control it would of course be most ideal to define the list in code sin
 
 ```python
 import stylecloud
-my_long_list = [thereof, may, state, united states]
+my_long_list = ["thereof", "may", "state", "united states"]
 
 stylecloud.gen_stylecloud(file_path=constitution.txt, custom_words=my_long_list)
 ```
