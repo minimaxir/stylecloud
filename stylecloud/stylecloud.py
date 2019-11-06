@@ -110,6 +110,7 @@ def gen_stylecloud(text=None,
                    max_font_size=200,
                    max_words=2000,
                    stopwords=True,
+                   custom_stopwords=STOPWORDS,
                    icon_dir='.temp',
                    output_name='stylecloud.png',
                    gradient=None,
@@ -126,6 +127,7 @@ def gen_stylecloud(text=None,
     :param max_font_size: Maximum font size in the stylecloud.
     :param max_words: Maximum number of words to include in the stylecloud.
     :param stopwords: Boolean to filter out common stopwords.
+    :param custom_stopwords: list of custom stopwords.
     :param icon_dir: Temp directory to store the icon mask image.
     :param output_name: Output file name of the stylecloud.
     :param gradient: Direction of gradient. (if not None, will use gradient)
@@ -162,7 +164,7 @@ def gen_stylecloud(text=None,
     wc = WordCloud(background_color=background_color,
                    font_path=font_path,
                    max_words=max_words, mask=mask_array,
-                   stopwords=stopwords if stopwords else STOPWORDS,
+                   stopwords=custom_stopwords if stopwords else None,
                    max_font_size=max_font_size, random_state=random_state)
 
     # generate word cloud
