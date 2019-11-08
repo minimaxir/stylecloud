@@ -15,7 +15,7 @@ STATIC_PATH = resource_filename(__name__, 'static')
 def file_to_text(file_path):
     """
     Reads a text file, or if the file is a .csv,
-    read as a dict of word/counts.
+    read as a dict of word/weights.
     """
 
     if not file_path.endswith('.csv'):
@@ -23,12 +23,22 @@ def file_to_text(file_path):
             text = f.read()
         return text
     else:  # parse as a CSV
-        texts = {}
+
         with open(file_path, 'r') as f:
             r = csv.reader(f)
-            next(r)
-            for row in r:
-                texts[row[0]] = float(row[1])
+            header = next(r)
+            assert len(header) <= 2, "The input CSV has too many columns."
+
+            # If a single-column CSV, read as a bulk text
+            if len(header) == 1:
+                texts = ''
+                for row in r:
+                    texts += row[0] + '\n'
+            # If a two-column CSV, read as words/weights
+            elif len(header) == 2:
+                texts = {}
+                for row in r:
+                    texts[row[0]] = float(row[1])
         return texts
 
 
