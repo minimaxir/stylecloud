@@ -126,7 +126,8 @@ def gen_stylecloud(text=None,
                    gradient=None,
                    font_path=os.path.join(STATIC_PATH,
                                           'Staatliches-Regular.ttf'),
-                   random_state=None):
+                   random_state=None,
+                   collocations=True):
     """Generates a stylecloud!
     :param text: Input text. Best used if calling the function directly.
     :param file_path: File path of the input text/CSV. Best used on the CLI.
@@ -143,6 +144,7 @@ def gen_stylecloud(text=None,
     :param gradient: Direction of gradient. (if not None, will use gradient)
     :param font_path: Path to .ttf file for font to use in stylecloud.
     :param random_state: Controls random state of words and colors.
+    :param collocations: Whether to include collocations (bigrams) of two words.
     """
 
     assert any([text, file_path]
@@ -175,7 +177,8 @@ def gen_stylecloud(text=None,
                    font_path=font_path,
                    max_words=max_words, mask=mask_array,
                    stopwords=custom_stopwords if stopwords else None,
-                   max_font_size=max_font_size, random_state=random_state)
+                   max_font_size=max_font_size, random_state=random_state,
+                   collocations=collocations)
 
     # generate word cloud
     if isinstance(text, str):
