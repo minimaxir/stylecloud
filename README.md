@@ -78,7 +78,7 @@ my_long_list = ["thereof", "may", "state", "united states"]
 
 stylecloud.gen_stylecloud(file_path=constitution.txt, custom_words=my_long_list)
 ```
-Good ressources for stopwords in other languages are the [stop-words python package](https://github.com/Alir3z4/python-stop-words) which gives you python lists directly. Or as JSON arrays this list of [iso stopword collections](https://github.com/stopwords-iso/stopwords-iso).
+Good resources for stopwords in other languages are the [stop-words python package](https://github.com/Alir3z4/python-stop-words) which gives you python lists directly. Or as JSON arrays this list of [iso stopword collections](https://github.com/stopwords-iso/stopwords-iso).
 
 ### Helpful Parameters
 
