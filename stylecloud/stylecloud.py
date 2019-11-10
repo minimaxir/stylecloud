@@ -190,8 +190,6 @@ def gen_stylecloud(text=None,
         def pal_colors(word, font_size, position,
                        orientation, random_state,
                        **kwargs):
-            if len(colors) == 1:
-                return tuple(colors[0])
             rand_color = np.random.randint(0, len(colors))
             return tuple(colors[rand_color])
 
