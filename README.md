@@ -8,8 +8,9 @@ stylecloud is a Python package that leverages the popular [word_cloud](https://g
 
 * Icon shapes (of any size!) for wordclouds (via [Font Awesome](https://fontawesome.com) 5.11.2)
 * Support for advanced color palettes (via [palettable](https://jiffyclub.github.io/palettable/))
+* Manual color selection for text and backgrounds,
 * Directional gradients w/ the aforementioned palettes.
-* Supports reading a file of text, or reading a pre-generated CSV with words and counts.
+* Supports reading text files and CSVs (either one-column w/ texts, or two columns w/ words+weights).
 * Command Line Interface!
 
 This package is a more formal implementation of my [stylistic word cloud project](https://minimaxir.com/2016/05/wordclouds/) from 2016.
@@ -24,7 +25,7 @@ pip3 install stylecloud
 
 ## Usage
 
-You can use stylecloud in a Python script or as a standalone CLI app. For example, let's say you have a text of the U.S. Constitution `constitution.txt`.
+You can use stylecloud in a Python script or as a standalone CLI app. For example, let's say you have a [text](https://github.com/amueller/word_cloud/blob/master/examples/constitution.txt) of the U.S. Constitution `constitution.txt`.
 
 Python script:
 
@@ -64,21 +65,41 @@ stylecloud --file_path constitution.txt --icon_name 'fas fa-dog' --palette color
 
 You can find more examples of styleclouds, including how to make styleclouds from Twitter and Reddit data, in the [stylecloud-examples](https://github.com/minimaxir/stylecloud-examples) repo.
 
-In order to deal with different languages or simply add list of custom stopwords it is possible to pass a list contained in a string as parameter like so :
+### Custom Colors for stylecloud Text
 
-```sh
-stylecloud --file_path constitution.txt --custom_words "[thereof, may, state, united states]"
+You can manually specify the color(s) of the text with the `colors` parameter, overriding the palettes. This can be useful for specific branding, or high-contrast visualizations. However, manual color selection not work with gradients.
+
+```python
+import stylecloud
+
+stylecloud.gen_stylecloud(file_path='constitution.txt',
+                          colors=['#ecf0f1', '#3498db', '#e74c3c'],
+                          background_color='#1A1A1A')
 ```
 
-For more control it would of course be most ideal to define the list in code since if one is defining stopwords for another language these lists can get long. In that case simply pass in the list as argument to the function
+```sh
+stylecloud --file_path constitution.txt --colors "['#ecf0f1', '#3498db', '#e74c3c']" --background_color '#1A1A1A'
+```
+
+![](https://github.com/minimaxir/stylecloud-examples/raw/master/hello-world/stylecloud5.png)
+
+### Stopwords
+
+In order to filter out stopwords in non-English languages or use custom stopwords, you can pass a list of words to the `custom_stopwords` parameter:
 
 ```python
 import stylecloud
 my_long_list = ["thereof", "may", "state", "united states"]
 
-stylecloud.gen_stylecloud(file_path=constitution.txt, custom_words=my_long_list)
+stylecloud.gen_stylecloud(file_path=constitution.txt,
+                          custom_stopwords=my_long_list)
 ```
-Good resources for stopwords in other languages are the [stop-words python package](https://github.com/Alir3z4/python-stop-words) which gives you python lists directly. Or as JSON arrays this list of [iso stopword collections](https://github.com/stopwords-iso/stopwords-iso).
+
+```sh
+stylecloud --file_path constitution.txt --custom_stopwords "[thereof, may, state, united states]"
+```
+
+Good resources for stopwords in other languages are the [stop-words Python package](https://github.com/Alir3z4/python-stop-words) and the [ISO stopword collections](https://github.com/stopwords-iso/stopwords-iso).
 
 ### Helpful Parameters
 
@@ -89,15 +110,17 @@ These parameters are valid for both the Python function and the CLI (you can use
 * gradient: Direction of gradient. (if not None, the stylecloud will use a directional gradient) [default: `None`]
 * size: Size (length and width in pixels) of the stylecloud. [default: `512`]
 * icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin') [default: `fas fa-flag`]
-* palette: Color palette (via palettable) [default: `cartocolors.qualitative.Bold_6`]
+* palette: Color palette (via palettable) [default: `cartocolors.qualitative.Bold_5`]
+* colors: Color(s) to use as the text colors. Overrides both gradient and palette if specified [default: `None`]
 * background_color: Background color (name or hex) [default: `white`]
 * max_font_size: Maximum font size in the stylecloud. [default: `200`]
 * max_words: Maximum number of words to include in the stylecloud. [default: `2000`]
 * stopwords: Boolean to filter out common stopwords. [default: `True`]
-* custom_stopwords: list of custom stopwords. e.g: For other languages than english [default: `STOPWORDS`]
+* custom_stopwords: list of custom stopwords. e.g: For other languages than english [default: `STOPWORDS`, via `word_cloud`]
 * output_name: Output file name of the stylecloud. [default: `stylecloud.png`]
 * font_path: Path to .ttf file for font to use in stylecloud. [default: uses included Staatliches font]
-* random_state: Controls random state of words and colors.
+* random_state: Controls random state of words and colors. [default: `None`]
+* collocations: Whether to include collocations (bigrams) of two words. Same behavior as base `word_cloud` package. [default: `True`]
 
 ## Helpful Notes
 
@@ -119,7 +142,7 @@ These parameters are valid for both the Python function and the CLI (you can use
 
 Max Woolf ([@minimaxir](https://minimaxir.com))
 
-*Max's open-source projects are supported by his [Patreon](https://www.patreon.com/minimaxir) and GitHub Sponsors. If you found this project helpful, any monetary contributions to the Patreon are appreciated and will be put to good creative use.*
+*Max's open-source projects are supported by his [Patreon](https://www.patreon.com/minimaxir) and [GitHub Sponsors](https://github.com/sponsors/minimaxir). If you found this project helpful, any monetary contributions to the Patreon are appreciated and will be put to good creative use.*
 
 ## License
 

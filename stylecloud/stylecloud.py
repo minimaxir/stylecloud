@@ -3,7 +3,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import csv
 import os
 from PIL import Image
-from matplotlib.colors import makeMappingArray
+from matplotlib.colors import makeMappingArray, to_rgb
 import numpy as np
 import fire
 from shutil import rmtree
@@ -111,11 +111,23 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
     return image_colors, np.uint8(mask_array)
 
 
+def color_to_rgb(color):
+    """Converts a color to a RGB tuple from (0-255)."""
+    if isinstance(color, tuple):
+        # if a RGB tuple already
+        return color
+    else:
+        # to_rgb() returns colors from (0-1)
+        color = tuple(int(x * 255) for x in to_rgb(color))
+        return color
+
+
 def gen_stylecloud(text=None,
                    file_path=None,
                    size=512,
                    icon_name='fas fa-flag',
-                   palette='cartocolors.qualitative.Bold_6',
+                   palette='cartocolors.qualitative.Bold_5',
+                   colors=None,
                    background_color="white",
                    max_font_size=200,
                    max_words=2000,
@@ -134,7 +146,8 @@ def gen_stylecloud(text=None,
     :param size: Size (length and width in pixels) of the stylecloud.
     :param icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin')
     :param palette: Color palette (via palettable)
-    :param background_color: Background color (name or hex)
+    :param colors: Custom color(s) for text (name or hex). Overrides palette.
+    :param background_color: Background color (name or hex).
     :param max_font_size: Maximum font size in the stylecloud.
     :param max_words: Maximum number of words to include in the stylecloud.
     :param stopwords: Boolean to filter out common stopwords.
@@ -155,20 +168,30 @@ def gen_stylecloud(text=None,
 
     gen_fa_mask(icon_name, size, icon_dir)
 
-    if gradient:
-        colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
-                                               gradient)
+    if gradient and colors is None:
+        pal_colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
+                                                   gradient)
     else:  # Color each word randomly from the palette
         mask_array = gen_mask_array(icon_dir, 'uint8')
-        palette_func = gen_palette(palette)
+        if colors:
+            # if specifying a single color string
+            if isinstance(colors, str):
+                colors = [colors]
 
-        # See also:
-        # https://amueller.github.io/word_cloud/auto_examples/a_new_hope.html
-        def colors(word, font_size, position,
-                   orientation, random_state,
-                   **kwargs):
-            rand_color = np.random.randint(0, palette_func.number - 1)
-            return tuple(palette_func.colors[rand_color])
+            # iterate through each color to ensure correct RGB format.
+            # see matplotlib docs on how colors are decoded:
+            # https://matplotlib.org/3.1.1/api/colors_api.html
+            colors = [color_to_rgb(color) for color in colors]
+
+        else:
+            palette_func = gen_palette(palette)
+            colors = palette_func.colors
+
+        def pal_colors(word, font_size, position,
+                       orientation, random_state,
+                       **kwargs):
+            rand_color = np.random.randint(0, len(colors))
+            return tuple(colors[rand_color])
 
     # cleanup icon folder
     rmtree(icon_dir)
@@ -184,8 +207,10 @@ def gen_stylecloud(text=None,
     if isinstance(text, str):
         wc.generate_from_text(text)
     else:  # i.e. a dict of word:value from a CSV
+        if stopwords:   # manually remove stopwords since otherwise ignored
+            text = {k: v for k, v in text.items() if k not in custom_stopwords}
         wc.generate_from_frequencies(text)
-    wc.recolor(color_func=colors, random_state=random_state)
+    wc.recolor(color_func=pal_colors, random_state=random_state)
     wc.to_file(output_name)
 
 
