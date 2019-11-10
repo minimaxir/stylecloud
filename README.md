@@ -91,7 +91,7 @@ In order to filter out stopwords in non-English languages or use custom stopword
 import stylecloud
 my_long_list = ["thereof", "may", "state", "united states"]
 
-stylecloud.gen_stylecloud(file_path=constitution.txt,
+stylecloud.gen_stylecloud(file_path='constitution.txt',
                           custom_stopwords=my_long_list)
 ```
 
