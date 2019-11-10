@@ -25,7 +25,7 @@ pip3 install stylecloud
 
 ## Usage
 
-You can use stylecloud in a Python script or as a standalone CLI app. For example, let's say you have a text of the U.S. Constitution `constitution.txt`.
+You can use stylecloud in a Python script or as a standalone CLI app. For example, let's say you have a [text](https://github.com/amueller/word_cloud/blob/master/examples/constitution.txt) of the U.S. Constitution `constitution.txt`.
 
 Python script:
 
@@ -116,10 +116,11 @@ These parameters are valid for both the Python function and the CLI (you can use
 * max_font_size: Maximum font size in the stylecloud. [default: `200`]
 * max_words: Maximum number of words to include in the stylecloud. [default: `2000`]
 * stopwords: Boolean to filter out common stopwords. [default: `True`]
-* custom_stopwords: list of custom stopwords. e.g: For other languages than english [default: `STOPWORDS`]
+* custom_stopwords: list of custom stopwords. e.g: For other languages than english [default: `STOPWORDS`, via `word_cloud`]
 * output_name: Output file name of the stylecloud. [default: `stylecloud.png`]
 * font_path: Path to .ttf file for font to use in stylecloud. [default: uses included Staatliches font]
-* random_state: Controls random state of words and colors.
+* random_state: Controls random state of words and colors. [default: `None`]
+* collocations: Whether to include collocations (bigrams) of two words. Same behavior as base `word_cloud` package. [default: `True`]
 
 ## Helpful Notes
 
