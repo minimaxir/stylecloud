@@ -67,7 +67,7 @@ You can find more examples of styleclouds, including how to make styleclouds fro
 
 ### Custom Colors for stylecloud Text
 
-You can manually specify the color(s) of the text with the `colors` parameter, overriding the palettes. This can be useful for specific branding, or high-contrast visualizations. However, manual color selection not work with gradients.
+You can manually specify the color(s) of the text with the `colors` parameter, overriding the palettes. This can be useful for specific branding, or high-contrast visualizations. However, manual color selection will not work with gradients.
 
 ```python
 import stylecloud
