@@ -89,7 +89,7 @@ These parameters are valid for both the Python function and the CLI (you can use
 * gradient: Direction of gradient. (if not None, the stylecloud will use a directional gradient) [default: `None`]
 * size: Size (length and width in pixels) of the stylecloud. [default: `512`]
 * icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin') [default: `fas fa-flag`]
-* palette: Color palette (via palettable) [default: `cartocolors.qualitative.Bold_6`]
+* palette: Color palette (via palettable) [default: `cartocolors.qualitative.Bold_5`]
 * background_color: Background color (name or hex) [default: `white`]
 * max_font_size: Maximum font size in the stylecloud. [default: `200`]
 * max_words: Maximum number of words to include in the stylecloud. [default: `2000`]

@@ -126,7 +126,7 @@ def gen_stylecloud(text=None,
                    file_path=None,
                    size=512,
                    icon_name='fas fa-flag',
-                   palette='cartocolors.qualitative.Bold_6',
+                   palette='cartocolors.qualitative.Bold_5',
                    colors=None,
                    background_color="white",
                    max_font_size=200,
@@ -192,7 +192,7 @@ def gen_stylecloud(text=None,
                        **kwargs):
             if len(colors) == 1:
                 return tuple(colors[0])
-            rand_color = np.random.randint(0, len(colors) - 1)
+            rand_color = np.random.randint(0, len(colors))
             return tuple(colors[rand_color])
 
     # cleanup icon folder
