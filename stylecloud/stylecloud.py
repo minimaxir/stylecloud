@@ -209,6 +209,8 @@ def gen_stylecloud(text=None,
     if isinstance(text, str):
         wc.generate_from_text(text)
     else:  # i.e. a dict of word:value from a CSV
+        if stopwords:   # manually remove stopwords since otherwise ignored
+            text = {k: v for k, v in text.items() if k not in custom_stopwords}
         wc.generate_from_frequencies(text)
     wc.recolor(color_func=pal_colors, random_state=random_state)
     wc.to_file(output_name)
