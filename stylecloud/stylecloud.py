@@ -81,20 +81,24 @@ def gen_palette(palette):
     return palette_func
 
 
-def gen_mask_array(icon_dir, dtype):
+def gen_mask_array(icon_dir, invert_mask):
     """Generates a numpy array of an icon mask."""
     icon = Image.open(os.path.join(icon_dir, 'icon.png'))
     mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
     mask.paste(icon, icon)
-    mask_array = np.array(mask, dtype=dtype)
+    mask_array = np.array(mask, dtype='uint8')
+
+    if invert_mask:
+        mask_array = np.invert(mask_array)
 
     return mask_array
 
 
 def gen_gradient_mask(size, palette, icon_dir='.temp',
-                      gradient_dir='horizontal'):
+                      gradient_dir='horizontal', invert_mask=False):
     """Generates a gradient color mask from a specified palette."""
-    mask_array = gen_mask_array(icon_dir, 'float32')
+    mask_array = gen_mask_array(icon_dir, invert_mask)
+    mask_array = np.float32(mask_array)
 
     palette_func = gen_palette(palette)
     gradient = np.array(makeMappingArray(size, palette_func.mpl_colormap))
@@ -146,6 +150,7 @@ def gen_stylecloud(text=None,
                                           'Staatliches-Regular.ttf'),
                    random_state=None,
                    collocations=True,
+                   invert_mask=False,
                    pro_icon_path=None,
                    pro_css_path=None):
     """Generates a stylecloud!
@@ -166,6 +171,7 @@ def gen_stylecloud(text=None,
     :param font_path: Path to .ttf file for font to use in stylecloud.
     :param random_state: Controls random state of words and colors.
     :param collocations: Whether to include collocations (bigrams) of two words.
+    :param invert_mask: Whether to invert the icon mask.
     :param pro_icon_path: Path to Font Awesome Pro .ttf file if using FA Pro.
     :param pro_css_path: Path to Font Awesome Pro .css file if using FA Pro.
     """
@@ -180,9 +186,9 @@ def gen_stylecloud(text=None,
 
     if gradient and colors is None:
         pal_colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
-                                                   gradient)
+                                                   gradient, invert_mask)
     else:  # Color each word randomly from the palette
-        mask_array = gen_mask_array(icon_dir, 'uint8')
+        mask_array = gen_mask_array(icon_dir, invert_mask)
         if colors:
             # if specifying a single color string
             if isinstance(colors, str):
