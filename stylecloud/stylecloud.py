@@ -42,7 +42,8 @@ def file_to_text(file_path):
         return texts
 
 
-def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp'):
+def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp',
+                pro_icon_path=None, pro_css_path=None):
     """
     Generates a Font Awesome icon mask from the given FA prefix + name.
     """
@@ -55,8 +56,13 @@ def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp'):
     icon_prefix = icon_name.split(' ')[0]
     icon_name_raw = icon_name.split(' ')[1]
 
-    icon = IconFont(css_file=os.path.join(STATIC_PATH, 'fontawesome.min.css'),
-                    ttf_file=os.path.join(STATIC_PATH, font_files[icon_prefix]))
+    css_path = pro_css_path or os.path.join(
+        STATIC_PATH, 'fontawesome.min.css')
+    ttf_path = pro_icon_path or os.path.join(
+        STATIC_PATH, font_files[icon_prefix])
+
+    icon = IconFont(css_file=css_path,
+                    ttf_file=ttf_path)
 
     icon.export_icon(icon=icon_name_raw[len(icon.common_prefix):],
                      size=size,
@@ -75,20 +81,24 @@ def gen_palette(palette):
     return palette_func
 
 
-def gen_mask_array(icon_dir, dtype):
+def gen_mask_array(icon_dir, invert_mask):
     """Generates a numpy array of an icon mask."""
     icon = Image.open(os.path.join(icon_dir, 'icon.png'))
     mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
     mask.paste(icon, icon)
-    mask_array = np.array(mask, dtype=dtype)
+    mask_array = np.array(mask, dtype='uint8')
+
+    if invert_mask:
+        mask_array = np.invert(mask_array)
 
     return mask_array
 
 
 def gen_gradient_mask(size, palette, icon_dir='.temp',
-                      gradient_dir='horizontal'):
+                      gradient_dir='horizontal', invert_mask=False):
     """Generates a gradient color mask from a specified palette."""
-    mask_array = gen_mask_array(icon_dir, 'float32')
+    mask_array = gen_mask_array(icon_dir, invert_mask)
+    mask_array = np.float32(mask_array)
 
     palette_func = gen_palette(palette)
     gradient = np.array(makeMappingArray(size, palette_func.mpl_colormap))
@@ -139,7 +149,10 @@ def gen_stylecloud(text=None,
                    font_path=os.path.join(STATIC_PATH,
                                           'Staatliches-Regular.ttf'),
                    random_state=None,
-                   collocations=True):
+                   collocations=True,
+                   invert_mask=False,
+                   pro_icon_path=None,
+                   pro_css_path=None):
     """Generates a stylecloud!
     :param text: Input text. Best used if calling the function directly.
     :param file_path: File path of the input text/CSV. Best used on the CLI.
@@ -158,6 +171,9 @@ def gen_stylecloud(text=None,
     :param font_path: Path to .ttf file for font to use in stylecloud.
     :param random_state: Controls random state of words and colors.
     :param collocations: Whether to include collocations (bigrams) of two words.
+    :param invert_mask: Whether to invert the icon mask.
+    :param pro_icon_path: Path to Font Awesome Pro .ttf file if using FA Pro.
+    :param pro_css_path: Path to Font Awesome Pro .css file if using FA Pro.
     """
 
     assert any([text, file_path]
@@ -166,13 +182,13 @@ def gen_stylecloud(text=None,
     if file_path:
         text = file_to_text(file_path)
 
-    gen_fa_mask(icon_name, size, icon_dir)
+    gen_fa_mask(icon_name, size, icon_dir, pro_icon_path, pro_css_path)
 
     if gradient and colors is None:
         pal_colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
-                                                   gradient)
+                                                   gradient, invert_mask)
     else:  # Color each word randomly from the palette
-        mask_array = gen_mask_array(icon_dir, 'uint8')
+        mask_array = gen_mask_array(icon_dir, invert_mask)
         if colors:
             # if specifying a single color string
             if isinstance(colors, str):

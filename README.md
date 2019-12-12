@@ -6,7 +6,7 @@ Generate stylistic wordclouds, including gradients and icon shapes!
 
 stylecloud is a Python package that leverages the popular [word_cloud](https://github.com/amueller/word_cloud) package, adding useful features to create truly unique word clouds!
 
-* Icon shapes (of any size!) for wordclouds (via [Font Awesome](https://fontawesome.com) 5.11.2)
+* Icon shapes (of any size!) for wordclouds (via [Font Awesome](https://fontawesome.com) 5.12.0 Free, or your own [Font Awesome Pro](https://github.com/minimaxir/stylecloud-examples/tree/master/fa-pro))
 * Support for advanced color palettes (via [palettable](https://jiffyclub.github.io/palettable/))
 * Manual color selection for text and backgrounds,
 * Directional gradients w/ the aforementioned palettes.
@@ -121,6 +121,9 @@ These parameters are valid for both the Python function and the CLI (you can use
 * font_path: Path to .ttf file for font to use in stylecloud. [default: uses included Staatliches font]
 * random_state: Controls random state of words and colors. [default: `None`]
 * collocations: Whether to include collocations (bigrams) of two words. Same behavior as base `word_cloud` package. [default: `True`]
+* invert_mask: Whether to invert the icon mask, so the words fill the space *except* the icon mask. [default: `False`]
+* pro_icon_path: Path to Font Awesome Pro .ttf file if using FA Pro. [default: `None`]
+* pro_css_path: Path to Font Awesome Pro .css file if using FA Pro. [default: `None`]
 
 ## Helpful Notes
 
@@ -133,10 +136,9 @@ These parameters are valid for both the Python function and the CLI (you can use
 * It's recommended to use FA icons which are large with heavy weight; thin icons might constrain the text too much.
 * If using the default random-color-sampling method, it's recommended to use a qualitative palette. Inversely, if using a gradient, it's recommended to use a *non*qualitative palette (e.g. a sequential palette).
   
-# To Do
+# Projects Using stylecloud
 
-* Support custom font files (e.g. Font Awesome Pro)
-* Create an app running stylecloud
+* [twcloud](https://github.com/minimaxir/twcloud) — Python package + CLI to generate wordclouds of Twitter tweets.
 
 ## Maintainer/Creator
 
