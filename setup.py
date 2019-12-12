@@ -5,7 +5,7 @@ Generate stylistic wordclouds, including gradients and icon shapes!
 
 stylecloud is a Python package that leverages the popular [word_cloud](https://github.com/amueller/word_cloud) package, adding useful features to create truly unique word clouds!
 
-* Icon shapes (of any size!) for wordclouds (via [Font Awesome](https://fontawesome.com) 5.11.2)
+* Icon shapes (of any size!) for wordclouds (via [Font Awesome](https://fontawesome.com) 5.12.0 Free, or your own Font Awesome Pro)
 * Support for advanced color palettes (via [palettable](https://jiffyclub.github.io/palettable/))
 * Manual color selection for text and backgrounds,
 * Directional gradients w/ the aforementioned palettes.
