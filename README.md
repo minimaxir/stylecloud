@@ -136,10 +136,9 @@ These parameters are valid for both the Python function and the CLI (you can use
 * It's recommended to use FA icons which are large with heavy weight; thin icons might constrain the text too much.
 * If using the default random-color-sampling method, it's recommended to use a qualitative palette. Inversely, if using a gradient, it's recommended to use a *non*qualitative palette (e.g. a sequential palette).
   
-# To Do
+# Projects Using stylecloud
 
-* Support custom font files (e.g. Font Awesome Pro)
-* Create an app running stylecloud
+* [twcloud](https://github.com/minimaxir/twcloud) — Python package + CLI to generate wordclouds of Twitter tweets.
 
 ## Maintainer/Creator
 
