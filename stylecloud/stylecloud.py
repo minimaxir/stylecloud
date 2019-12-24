@@ -24,7 +24,7 @@ def file_to_text(file_path):
         return text
     else:  # parse as a CSV
 
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             r = csv.reader(f)
             header = next(r)
             assert len(header) <= 2, "The input CSV has too many columns."
