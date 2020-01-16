@@ -64,6 +64,10 @@ def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp',
     icon = IconFont(css_file=css_path,
                     ttf_file=ttf_path)
 
+    # If a length and width are provided, make icon the smaller of the two
+    if isinstance(size, tuple):
+        size = min(size)
+
     icon.export_icon(icon=icon_name_raw[len(icon.common_prefix):],
                      size=size,
                      filename="icon.png",
@@ -81,11 +85,21 @@ def gen_palette(palette):
     return palette_func
 
 
-def gen_mask_array(icon_dir, invert_mask):
+def gen_mask_array(icon_dir, invert_mask, size):
     """Generates a numpy array of an icon mask."""
     icon = Image.open(os.path.join(icon_dir, 'icon.png'))
-    mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
-    mask.paste(icon, icon)
+
+    if isinstance(size, int):
+        size = (size, size)
+
+    # https://stackoverflow.com/a/2563883
+    icon_w, icon_h = icon.size
+    icon_mask = Image.new("RGBA", icon.size, (255, 255, 255, 255))
+    icon_mask.paste(icon, icon)
+    mask = Image.new("RGBA", size, (255, 255, 255, 255))
+    mask_w, mask_h = mask.size
+    offset = ((mask_w - icon_w) // 2, (mask_h - icon_h) // 2)
+    mask.paste(icon_mask, offset)
     mask_array = np.array(mask, dtype='uint8')
 
     if invert_mask:
@@ -97,7 +111,7 @@ def gen_mask_array(icon_dir, invert_mask):
 def gen_gradient_mask(size, palette, icon_dir='.temp',
                       gradient_dir='horizontal', invert_mask=False):
     """Generates a gradient color mask from a specified palette."""
-    mask_array = gen_mask_array(icon_dir, invert_mask)
+    mask_array = gen_mask_array(icon_dir, invert_mask, size)
     mask_array = np.float32(mask_array)
 
     palette_func = gen_palette(palette)
@@ -188,7 +202,7 @@ def gen_stylecloud(text=None,
         pal_colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
                                                    gradient, invert_mask)
     else:  # Color each word randomly from the palette
-        mask_array = gen_mask_array(icon_dir, invert_mask)
+        mask_array = gen_mask_array(icon_dir, invert_mask, size)
         if colors:
             # if specifying a single color string
             if isinstance(colors, str):

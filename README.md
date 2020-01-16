@@ -108,7 +108,7 @@ These parameters are valid for both the Python function and the CLI (you can use
 * text: Input text. Best used if calling the function directly.
 * file_path: File path of the input text/CSV. Best used on the CLI.
 * gradient: Direction of gradient. (if not None, the stylecloud will use a directional gradient) [default: `None`]
-* size: Size (length and width in pixels) of the stylecloud. [default: `512`]
+* size: Size (length and width in pixels) of the stylecloud, or a two-element tuple representing the width and height of the stylecloud (e.g. `'(1024, 512)'` for a 1024x512 stylecloud). [default: `512`]
 * icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin') [default: `fas fa-flag`]
 * palette: Color palette (via palettable) [default: `cartocolors.qualitative.Bold_5`]
 * colors: Color(s) to use as the text colors. Overrides both gradient and palette if specified [default: `None`]
