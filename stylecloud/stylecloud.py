@@ -8,11 +8,12 @@ import numpy as np
 import fire
 from shutil import rmtree
 from pkg_resources import resource_filename
+from typing import List, Union
 
 STATIC_PATH = resource_filename(__name__, "static")
 
 
-def file_to_text(file_path):
+def file_to_text(file_path: str):
     """
     Reads a text file, or if the file is a .csv,
     read as a dict of word/weights.
@@ -43,11 +44,11 @@ def file_to_text(file_path):
 
 
 def gen_fa_mask(
-    icon_name="fas fa-grin",
-    size=512,
-    icon_dir=".temp",
-    pro_icon_path=None,
-    pro_css_path=None,
+    icon_name: str = "fas fa-grin",
+    size: int = 512,
+    icon_dir: str = ".temp",
+    pro_icon_path: str = None,
+    pro_css_path: str = None,
 ):
     """
     Generates a Font Awesome icon mask from the given FA prefix + name.
@@ -80,7 +81,7 @@ def gen_fa_mask(
     )
 
 
-def gen_palette(palette):
+def gen_palette(palette: str):
     """Generates the corresponding palette function from `palettable`."""
     palette_split = palette.split(".")
     palette_name = palette_split[-1]
@@ -96,7 +97,7 @@ def gen_palette(palette):
     return palette_func
 
 
-def gen_mask_array(icon_dir, invert_mask, size):
+def gen_mask_array(icon_dir: str, invert_mask: bool, size: int):
     """Generates a numpy array of an icon mask."""
     icon = Image.open(os.path.join(icon_dir, "icon.png"))
 
@@ -120,7 +121,11 @@ def gen_mask_array(icon_dir, invert_mask, size):
 
 
 def gen_gradient_mask(
-    size, palette, icon_dir=".temp", gradient_dir="horizontal", invert_mask=False
+    size: int,
+    palette: str,
+    icon_dir: str = ".temp",
+    gradient_dir: str = "horizontal",
+    invert_mask: bool = False,
 ):
     """Generates a gradient color mask from a specified palette."""
     mask_array = gen_mask_array(icon_dir, invert_mask, size)
@@ -159,26 +164,26 @@ def color_to_rgb(color):
 
 
 def gen_stylecloud(
-    text=None,
-    file_path=None,
-    size=512,
-    icon_name="fas fa-flag",
-    palette="cartocolors.qualitative.Bold_5",
-    colors=None,
-    background_color="white",
-    max_font_size=200,
-    max_words=2000,
-    stopwords=True,
-    custom_stopwords=STOPWORDS,
-    icon_dir=".temp",
-    output_name="stylecloud.png",
-    gradient=None,
-    font_path=os.path.join(STATIC_PATH, "Staatliches-Regular.ttf"),
-    random_state=None,
-    collocations=True,
-    invert_mask=False,
-    pro_icon_path=None,
-    pro_css_path=None,
+    text: str = None,
+    file_path: str = None,
+    size: int = 512,
+    icon_name: str = "fas fa-flag",
+    palette: str = "cartocolors.qualitative.Bold_5",
+    colors: Union(str, List[str]) = None,
+    background_color: str = "white",
+    max_font_size: int = 200,
+    max_words: int = 2000,
+    stopwords: bool = True,
+    custom_stopwords: Union(List[str], set) = STOPWORDS,
+    icon_dir: str = ".temp",
+    output_name: str = "stylecloud.png",
+    gradient: str = None,
+    font_path: str = os.path.join(STATIC_PATH, "Staatliches-Regular.ttf"),
+    random_state: int = None,
+    collocations: bool = True,
+    invert_mask: bool = False,
+    pro_icon_path: str = None,
+    pro_css_path: str = None,
 ):
     """Generates a stylecloud!
     :param text: Input text. Best used if calling the function directly.
