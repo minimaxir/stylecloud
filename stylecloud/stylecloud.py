@@ -175,6 +175,7 @@ def gen_stylecloud(
     max_words: int = 2000,
     stopwords: bool = True,
     custom_stopwords: Union(List[str], set) = STOPWORDS,
+    add_stopwords: bool = False,
     icon_dir: str = ".temp",
     output_name: str = "stylecloud.png",
     gradient: str = None,
@@ -197,6 +198,7 @@ def gen_stylecloud(
     :param max_words: Maximum number of words to include in the stylecloud.
     :param stopwords: Boolean to filter out common stopwords.
     :param custom_stopwords: list of custom stopwords.
+    :param add_stopwords: Whether to use custom_stopwords to add to default
     :param icon_dir: Temp directory to store the icon mask image.
     :param output_name: Output file name of the stylecloud.
     :param gradient: Direction of gradient. (if not None, will use gradient)
@@ -238,6 +240,9 @@ def gen_stylecloud(
         def pal_colors(word, font_size, position, orientation, random_state, **kwargs):
             rand_color = np.random.randint(0, len(colors))
             return tuple(colors[rand_color])
+
+    if add_stopwords:
+        custom_stopwords.extend(STOPWORDS)
 
     # cleanup icon folder
     rmtree(icon_dir)
