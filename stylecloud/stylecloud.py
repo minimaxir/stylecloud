@@ -9,7 +9,7 @@ import fire
 from shutil import rmtree
 from pkg_resources import resource_filename
 
-STATIC_PATH = resource_filename(__name__, 'static')
+STATIC_PATH = resource_filename(__name__, "static")
 
 
 def file_to_text(file_path):
@@ -18,22 +18,22 @@ def file_to_text(file_path):
     read as a dict of word/weights.
     """
 
-    if not file_path.endswith('.csv'):
-        with open(file_path, 'r', encoding='utf-8') as f:
+    if not file_path.endswith(".csv"):
+        with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
         return text
     else:  # parse as a CSV
 
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             r = csv.reader(f)
             header = next(r)
             assert len(header) <= 2, "The input CSV has too many columns."
 
             # If a single-column CSV, read as a bulk text
             if len(header) == 1:
-                texts = ''
+                texts = ""
                 for row in r:
-                    texts += row[0] + '\n'
+                    texts += row[0] + "\n"
             # If a two-column CSV, read as words/weights
             elif len(header) == 2:
                 texts = {}
@@ -42,36 +42,42 @@ def file_to_text(file_path):
         return texts
 
 
-def gen_fa_mask(icon_name='fas fa-grin', size=512, icon_dir='.temp',
-                pro_icon_path=None, pro_css_path=None):
+def gen_fa_mask(
+    icon_name="fas fa-grin",
+    size=512,
+    icon_dir=".temp",
+    pro_icon_path=None,
+    pro_css_path=None,
+):
     """
     Generates a Font Awesome icon mask from the given FA prefix + name.
     """
 
     # FA prefixes which map to a font file.
-    font_files = {'fas': 'fa-solid-900.ttf',
-                  'far': 'fa-regular-400.ttf',
-                  'fab': 'fa-brands-400.ttf'}
+    font_files = {
+        "fas": "fa-solid-900.ttf",
+        "far": "fa-regular-400.ttf",
+        "fab": "fa-brands-400.ttf",
+    }
 
-    icon_prefix = icon_name.split(' ')[0]
-    icon_name_raw = icon_name.split(' ')[1]
+    icon_prefix = icon_name.split(" ")[0]
+    icon_name_raw = icon_name.split(" ")[1]
 
-    css_path = pro_css_path or os.path.join(
-        STATIC_PATH, 'fontawesome.min.css')
-    ttf_path = pro_icon_path or os.path.join(
-        STATIC_PATH, font_files[icon_prefix])
+    css_path = pro_css_path or os.path.join(STATIC_PATH, "fontawesome.min.css")
+    ttf_path = pro_icon_path or os.path.join(STATIC_PATH, font_files[icon_prefix])
 
-    icon = IconFont(css_file=css_path,
-                    ttf_file=ttf_path)
+    icon = IconFont(css_file=css_path, ttf_file=ttf_path)
 
     # If a length and width are provided, make icon the smaller of the two
     if isinstance(size, tuple):
         size = min(size)
 
-    icon.export_icon(icon=icon_name_raw[len(icon.common_prefix):],
-                     size=size,
-                     filename="icon.png",
-                     export_dir=icon_dir)
+    icon.export_icon(
+        icon=icon_name_raw[len(icon.common_prefix) :],
+        size=size,
+        filename="icon.png",
+        export_dir=icon_dir,
+    )
 
 
 def gen_palette(palette):
@@ -80,14 +86,19 @@ def gen_palette(palette):
     palette_name = palette_split[-1]
 
     # https://stackoverflow.com/a/6677505
-    palette_func = getattr(__import__('palettable.{}'.format(
-        ".".join(palette_split[:-1])), fromlist=[palette_name]), palette_name)
+    palette_func = getattr(
+        __import__(
+            "palettable.{}".format(".".join(palette_split[:-1])),
+            fromlist=[palette_name],
+        ),
+        palette_name,
+    )
     return palette_func
 
 
 def gen_mask_array(icon_dir, invert_mask, size):
     """Generates a numpy array of an icon mask."""
-    icon = Image.open(os.path.join(icon_dir, 'icon.png'))
+    icon = Image.open(os.path.join(icon_dir, "icon.png"))
 
     if isinstance(size, int):
         size = (size, size)
@@ -100,7 +111,7 @@ def gen_mask_array(icon_dir, invert_mask, size):
     mask_w, mask_h = mask.size
     offset = ((mask_w - icon_w) // 2, (mask_h - icon_h) // 2)
     mask.paste(icon_mask, offset)
-    mask_array = np.array(mask, dtype='uint8')
+    mask_array = np.array(mask, dtype="uint8")
 
     if invert_mask:
         mask_array = np.invert(mask_array)
@@ -108,8 +119,9 @@ def gen_mask_array(icon_dir, invert_mask, size):
     return mask_array
 
 
-def gen_gradient_mask(size, palette, icon_dir='.temp',
-                      gradient_dir='horizontal', invert_mask=False):
+def gen_gradient_mask(
+    size, palette, icon_dir=".temp", gradient_dir="horizontal", invert_mask=False
+):
     """Generates a gradient color mask from a specified palette."""
     mask_array = gen_mask_array(icon_dir, invert_mask, size)
     mask_array = np.float32(mask_array)
@@ -118,17 +130,17 @@ def gen_gradient_mask(size, palette, icon_dir='.temp',
     gradient = np.array(makeMappingArray(size, palette_func.mpl_colormap))
 
     # matplotlib color maps are from range of (0, 1). Convert to RGB.
-    gradient *= 255.
+    gradient *= 255.0
 
     # Add new axis and repeat gradient across it.
     gradient = np.tile(gradient, (size, 1, 1))
 
     # if vertical, transpose the gradient.
-    if gradient_dir == 'vertical':
+    if gradient_dir == "vertical":
         gradient = np.transpose(gradient, (1, 0, 2))
 
     # Turn any nonwhite pixels on the icon into the gradient colors.
-    white = (255., 255., 255., 255.)
+    white = (255.0, 255.0, 255.0, 255.0)
     mask_array[mask_array != white] = gradient[mask_array != white]
 
     image_colors = ImageColorGenerator(mask_array)
@@ -146,27 +158,28 @@ def color_to_rgb(color):
         return color
 
 
-def gen_stylecloud(text=None,
-                   file_path=None,
-                   size=512,
-                   icon_name='fas fa-flag',
-                   palette='cartocolors.qualitative.Bold_5',
-                   colors=None,
-                   background_color="white",
-                   max_font_size=200,
-                   max_words=2000,
-                   stopwords=True,
-                   custom_stopwords=STOPWORDS,
-                   icon_dir='.temp',
-                   output_name='stylecloud.png',
-                   gradient=None,
-                   font_path=os.path.join(STATIC_PATH,
-                                          'Staatliches-Regular.ttf'),
-                   random_state=None,
-                   collocations=True,
-                   invert_mask=False,
-                   pro_icon_path=None,
-                   pro_css_path=None):
+def gen_stylecloud(
+    text=None,
+    file_path=None,
+    size=512,
+    icon_name="fas fa-flag",
+    palette="cartocolors.qualitative.Bold_5",
+    colors=None,
+    background_color="white",
+    max_font_size=200,
+    max_words=2000,
+    stopwords=True,
+    custom_stopwords=STOPWORDS,
+    icon_dir=".temp",
+    output_name="stylecloud.png",
+    gradient=None,
+    font_path=os.path.join(STATIC_PATH, "Staatliches-Regular.ttf"),
+    random_state=None,
+    collocations=True,
+    invert_mask=False,
+    pro_icon_path=None,
+    pro_css_path=None,
+):
     """Generates a stylecloud!
     :param text: Input text. Best used if calling the function directly.
     :param file_path: File path of the input text/CSV. Best used on the CLI.
@@ -190,8 +203,7 @@ def gen_stylecloud(text=None,
     :param pro_css_path: Path to Font Awesome Pro .css file if using FA Pro.
     """
 
-    assert any([text, file_path]
-               ), "Either text or file_path must be specified."
+    assert any([text, file_path]), "Either text or file_path must be specified."
 
     if file_path:
         text = file_to_text(file_path)
@@ -199,8 +211,9 @@ def gen_stylecloud(text=None,
     gen_fa_mask(icon_name, size, icon_dir, pro_icon_path, pro_css_path)
 
     if gradient and colors is None:
-        pal_colors, mask_array = gen_gradient_mask(size, palette, icon_dir,
-                                                   gradient, invert_mask)
+        pal_colors, mask_array = gen_gradient_mask(
+            size, palette, icon_dir, gradient, invert_mask
+        )
     else:  # Color each word randomly from the palette
         mask_array = gen_mask_array(icon_dir, invert_mask, size)
         if colors:
@@ -217,27 +230,29 @@ def gen_stylecloud(text=None,
             palette_func = gen_palette(palette)
             colors = palette_func.colors
 
-        def pal_colors(word, font_size, position,
-                       orientation, random_state,
-                       **kwargs):
+        def pal_colors(word, font_size, position, orientation, random_state, **kwargs):
             rand_color = np.random.randint(0, len(colors))
             return tuple(colors[rand_color])
 
     # cleanup icon folder
     rmtree(icon_dir)
 
-    wc = WordCloud(background_color=background_color,
-                   font_path=font_path,
-                   max_words=max_words, mask=mask_array,
-                   stopwords=custom_stopwords if stopwords else None,
-                   max_font_size=max_font_size, random_state=random_state,
-                   collocations=collocations)
+    wc = WordCloud(
+        background_color=background_color,
+        font_path=font_path,
+        max_words=max_words,
+        mask=mask_array,
+        stopwords=custom_stopwords if stopwords else None,
+        max_font_size=max_font_size,
+        random_state=random_state,
+        collocations=collocations,
+    )
 
     # generate word cloud
     if isinstance(text, str):
         wc.generate_from_text(text)
     else:  # i.e. a dict of word:value from a CSV
-        if stopwords:   # manually remove stopwords since otherwise ignored
+        if stopwords:  # manually remove stopwords since otherwise ignored
             text = {k: v for k, v in text.items() if k not in custom_stopwords}
         wc.generate_from_frequencies(text)
     wc.recolor(color_func=pal_colors, random_state=random_state)
