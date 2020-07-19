@@ -184,6 +184,7 @@ def gen_stylecloud(
     file_path: str = None,
     size: int = 512,
     icon_name: str = "fas fa-flag",
+    mask_file: str = None,
     palette: str = "cartocolors.qualitative.Bold_5",
     colors: Union[str, List[str]] = None,
     background_color: str = "white",
@@ -213,6 +214,7 @@ def gen_stylecloud(
     file_path        : File path of the input text/CSV. Best used on the CLI.
     size             : Size (length and width in pixels) of the stylecloud.
     icon_name        : Icon Name for the stylecloud shape. (e.g. 'fas fa-grin')
+    mask_file        : File path of Word Cloud Mask to use. Overrides icon_name, size.
     palette          : Color palette (via palettable)
     colors           : Custom color(s) for text (name or hex). Overrides palette.
     background_color : Background color (name or hex).
@@ -238,7 +240,7 @@ def gen_stylecloud(
 
     if file_path:
         text = file_to_text(file_path)
-
+        
     gen_fa_mask(icon_name, size, icon_dir, pro_icon_path, pro_css_path)
 
     if gradient and colors is None:
@@ -268,6 +270,9 @@ def gen_stylecloud(
 
     if add_stopwords:
         custom_stopwords.extend(STOPWORDS)
+        
+    if mask_file!=None:
+        mask_array = np.array(Image.open(mask_file))
 
     # cleanup icon folder
     rmtree(icon_dir)
