@@ -4,6 +4,7 @@ import csv
 import os
 from PIL import Image
 from matplotlib.colors import makeMappingArray, to_rgb
+import matplotlib.pyplot as plt
 import numpy as np
 import fire
 from shutil import rmtree
@@ -19,15 +20,11 @@ def file_to_text(file_path: str):
     read as a dict of word/weights.
     """
 
-    if not file_path.endswith(".csv"):
-        with open(file_path, "r", encoding="utf-8") as f:
-            text = f.read()
-        return text
-    else:  # parse as a CSV
-
+    if file_path.endswith(".csv"):
         with open(file_path, "r", encoding="utf-8") as f:
             r = csv.reader(f)
             header = next(r)
+            
             assert len(header) <= 2, "The input CSV has too many columns."
 
             # If a single-column CSV, read as a bulk text
@@ -35,14 +32,21 @@ def file_to_text(file_path: str):
                 texts = ""
                 for row in r:
                     texts += row[0] + "\n"
-            # If a two-column CSV, read as words/weights
+                    
+            # If a two-column CSV, read as words/frequencies.
             elif len(header) == 2:
                 texts = {}
                 for row in r:
-                    texts[row[0]] = float(row[1])
+                    texts[row[0]] = float(row[1])                    
         return texts
-
-
+    
+    else:
+        # Read file as a bulk text            
+        with open(file_path, "r", encoding="utf-8") as f:
+            text = f.read()
+        return text
+    
+    
 def gen_fa_mask(
     icon_name: str = "fas fa-grin",
     size: int = 512,
@@ -82,7 +86,10 @@ def gen_fa_mask(
 
 
 def gen_palette(palette: str):
-    """Generates the corresponding palette function from `palettable`."""
+    """
+    Generates the corresponding palette function from `palettable`.
+    """
+    
     palette_split = palette.split(".")
     palette_name = palette_split[-1]
 
@@ -98,7 +105,10 @@ def gen_palette(palette: str):
 
 
 def gen_mask_array(icon_dir: str, invert_mask: bool, size: int):
-    """Generates a numpy array of an icon mask."""
+    """
+    Generates a numpy array of an icon mask.
+    """
+    
     icon = Image.open(os.path.join(icon_dir, "icon.png"))
 
     if isinstance(size, int):
@@ -127,7 +137,10 @@ def gen_gradient_mask(
     gradient_dir: str = "horizontal",
     invert_mask: bool = False,
 ):
-    """Generates a gradient color mask from a specified palette."""
+    """
+    Generates a gradient color mask from a specified palette.
+    """
+    
     mask_array = gen_mask_array(icon_dir, invert_mask, size)
     mask_array = np.float32(mask_array)
 
@@ -153,7 +166,10 @@ def gen_gradient_mask(
 
 
 def color_to_rgb(color):
-    """Converts a color to a RGB tuple from (0-255)."""
+    """
+    Converts a color to a RGB tuple from (0-255).
+    """
+    
     if isinstance(color, tuple):
         # if a RGB tuple already
         return color
@@ -168,6 +184,7 @@ def gen_stylecloud(
     file_path: str = None,
     size: int = 512,
     icon_name: str = "fas fa-flag",
+    mask_file: str = None,
     palette: str = "cartocolors.qualitative.Bold_5",
     colors: Union[str, List[str]] = None,
     background_color: str = "white",
@@ -178,6 +195,8 @@ def gen_stylecloud(
     add_stopwords: bool = False,
     icon_dir: str = ".temp",
     output_name: str = "stylecloud.png",
+    plot_cloud: bool = False,
+    plot_size: int = (12,12),
     gradient: str = None,
     font_path: str = os.path.join(STATIC_PATH, "Staatliches-Regular.ttf"),
     random_state: int = None,
@@ -186,41 +205,49 @@ def gen_stylecloud(
     pro_icon_path: str = None,
     pro_css_path: str = None,
 ):
-    """Generates a stylecloud!
-    :param text: Input text. Best used if calling the function directly.
-    :param file_path: File path of the input text/CSV. Best used on the CLI.
-    :param size: Size (length and width in pixels) of the stylecloud.
-    :param icon_name: Icon Name for the stylecloud shape. (e.g. 'fas fa-grin')
-    :param palette: Color palette (via palettable)
-    :param colors: Custom color(s) for text (name or hex). Overrides palette.
-    :param background_color: Background color (name or hex).
-    :param max_font_size: Maximum font size in the stylecloud.
-    :param max_words: Maximum number of words to include in the stylecloud.
-    :param stopwords: Boolean to filter out common stopwords.
-    :param custom_stopwords: list of custom stopwords.
-    :param add_stopwords: Whether to use custom_stopwords to add to default
-    :param icon_dir: Temp directory to store the icon mask image.
-    :param output_name: Output file name of the stylecloud.
-    :param gradient: Direction of gradient. (if not None, will use gradient)
-    :param font_path: Path to .ttf file for font to use in stylecloud.
-    :param random_state: Controls random state of words and colors.
-    :param collocations: Whether to include collocations (bigrams) of two words.
-    :param invert_mask: Whether to invert the icon mask.
-    :param pro_icon_path: Path to Font Awesome Pro .ttf file if using FA Pro.
-    :param pro_css_path: Path to Font Awesome Pro .css file if using FA Pro.
+    """
+    Generates a stylecloud!
+    
+    Parameters
+    ------------
+    text             : Input text or Word Freq Dict. Best used if calling the function directly.
+    file_path        : File path of the input text/CSV. Best used on the CLI.
+    size             : Size (length and width in pixels) of the stylecloud.
+    icon_name        : Icon Name for the stylecloud shape. (e.g. 'fas fa-grin')
+    mask_file        : File path of Word Cloud Mask to use. Overrides icon_name, size.
+    palette          : Color palette (via palettable)
+    colors           : Custom color(s) for text (name or hex). Overrides palette.
+    background_color : Background color (name or hex).
+    max_font_size    : Maximum font size in the stylecloud.
+    max_words        : Maximum number of words to include in the stylecloud.
+    stopwords        : Boolean to filter out common stopwords.
+    custom_stopwords : list of custom stopwords.
+    add_stopwords    : Whether to use custom_stopwords to add to default
+    icon_dir         : Temp directory to store the icon mask image.
+    output_name      : Output file name of the stylecloud.
+    plot_cloud       : Whether to plot the word cloud or not.
+    plot_size        : Size (length and width in inches) of the plot.
+    gradient         : Direction of gradient. (if not None, will use gradient)
+    font_path        : Path to .ttf file for font to use in stylecloud.
+    random_state     : Controls random state of words and colors.
+    collocations     : Whether to include collocations (bigrams) of two words.
+    invert_mask      : Whether to invert the icon mask.
+    pro_icon_path    : Path to Font Awesome Pro .ttf file if using FA Pro.
+    pro_css_path     : Path to Font Awesome Pro .css file if using FA Pro.
     """
 
     assert any([text, file_path]), "Either text or file_path must be specified."
 
     if file_path:
         text = file_to_text(file_path)
-
+        
     gen_fa_mask(icon_name, size, icon_dir, pro_icon_path, pro_css_path)
 
     if gradient and colors is None:
         pal_colors, mask_array = gen_gradient_mask(
             size, palette, icon_dir, gradient, invert_mask
         )
+        
     else:  # Color each word randomly from the palette
         mask_array = gen_mask_array(icon_dir, invert_mask, size)
         if colors:
@@ -243,6 +270,9 @@ def gen_stylecloud(
 
     if add_stopwords:
         custom_stopwords.extend(STOPWORDS)
+        
+    if mask_file!=None:
+        mask_array = np.array(Image.open(mask_file))
 
     # cleanup icon folder
     rmtree(icon_dir)
@@ -252,7 +282,7 @@ def gen_stylecloud(
         font_path=font_path,
         max_words=max_words,
         mask=mask_array,
-        stopwords=custom_stopwords if stopwords else None,
+        stopwords = custom_stopwords if stopwords else None,
         max_font_size=max_font_size,
         random_state=random_state,
         collocations=collocations,
@@ -261,14 +291,22 @@ def gen_stylecloud(
     # generate word cloud
     if isinstance(text, str):
         wc.generate_from_text(text)
-    else:  # i.e. a dict of word:value from a CSV
+    elif isinstance(text, dict):
         if stopwords:  # manually remove stopwords since otherwise ignored
             text = {k: v for k, v in text.items() if k not in custom_stopwords}
         wc.generate_from_frequencies(text)
+    
     wc.recolor(color_func=pal_colors, random_state=random_state)
     wc.to_file(output_name)
-
-
+    
+    # Plots the word cloud
+    if plot_cloud:
+        plt.figure(figsize=plot_size)
+        plt.imshow(wc, interpolation='bilinear')
+        plt.axis("off")
+        
 def stylecloud_cli(**kwargs):
-    """Entrypoint for the stylecloud CLI."""
+    """
+    Entrypoint for the stylecloud CLI.
+    """
     fire.Fire(gen_stylecloud)
