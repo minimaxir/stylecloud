@@ -3,7 +3,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import csv
 import os
 from PIL import Image
-from matplotlib.colors import makeMappingArray, to_rgb
+from matplotlib.colors import to_rgb
 import numpy as np
 import fire
 from shutil import rmtree
