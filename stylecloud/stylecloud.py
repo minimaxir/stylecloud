@@ -185,6 +185,7 @@ def gen_stylecloud(
     invert_mask: bool = False,
     pro_icon_path: str = None,
     pro_css_path: str = None,
+    display_image: bool = False,
 ):
     """Generates a stylecloud!
     :param text: Input text. Best used if calling the function directly.
@@ -208,6 +209,7 @@ def gen_stylecloud(
     :param invert_mask: Whether to invert the icon mask.
     :param pro_icon_path: Path to Font Awesome Pro .ttf file if using FA Pro.
     :param pro_css_path: Path to Font Awesome Pro .css file if using FA Pro.
+    :param display_image: Whether to display image after creation or not.
     """
 
     assert any([text, file_path]), "Either text or file_path must be specified."
@@ -267,6 +269,10 @@ def gen_stylecloud(
         wc.generate_from_frequencies(text)
     wc.recolor(color_func=pal_colors, random_state=random_state)
     wc.to_file(output_name)
+
+    # display the image if this param is set to True
+    if display_image :
+        Image.open(output_name).show()
 
 
 def stylecloud_cli(**kwargs):
