@@ -3,7 +3,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import csv
 import os
 from PIL import Image
-from matplotlib.colors import makeMappingArray, to_rgb
+from matplotlib.colors import to_rgb
 import numpy as np
 import fire
 from shutil import rmtree
@@ -132,7 +132,7 @@ def gen_gradient_mask(
     mask_array = np.float32(mask_array)
 
     palette_func = gen_palette(palette)
-    gradient = np.array(makeMappingArray(size, palette_func.mpl_colormap))
+    gradient = palette_func.mpl_colormap(np.linspace(0.0, 1.0, size))
 
     # matplotlib color maps are from range of (0, 1). Convert to RGB.
     gradient *= 255.0

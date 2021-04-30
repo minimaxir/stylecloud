@@ -19,7 +19,7 @@ This package is a more formal implementation of my [stylistic word cloud project
 setup(
     name="stylecloud",
     packages=["stylecloud"],  # this must be the same as the name above
-    version="0.5.1",
+    version="0.5.2",
     description="Python package + CLI to generate stylistic wordclouds, "
     "including gradients and icon shapes!",
     long_description=long_description,
@@ -33,7 +33,7 @@ setup(
     entry_points={
         "console_scripts": ["stylecloud=stylecloud.stylecloud:stylecloud_cli"],
     },
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     include_package_data=True,
     install_requires=[
         "wordcloud",
